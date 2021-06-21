@@ -35,17 +35,14 @@ exports.getUser = async (userid) => {
 
 exports.createUser = async (User_id, User_name, Password, Auth) => {
     try {
-        let query1 = `
-            INSERT INTO tb_user (
-                User_id, User_name, Password, Auth`;
-
-        let query2 = `) 
+        let query = `
+            INSERT INTO tb_user 
+                (User_id, User_name, Password, Auth)
             VALUES 
-                (${User_id}, '${User_name}', '${Password}', '${Auth}'`;
+                ('${User_id}', '${User_name}', '${Password}', '${Auth}')`;
 
-        let query3 = `)`;
-
-        const result = await sql.query(query1 + query2 + query3);
+        console.log(query);
+        const result = await sql.query(query);
         return result[0];
     } catch (err) {
         console.error(err);

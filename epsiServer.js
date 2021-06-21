@@ -6,7 +6,7 @@ const app = express();
 // const http = require('http').Server(app);
 // const socketio = require('socket.io')(http);
 
-// const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users');
 // const roomsRouter = require('./routes/rooms');
 // const messagesRouter = require('./routes/messages');
 
@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-// app.use('/api/users', usersRouter);
+app.use('/api/users', usersRouter);
 // app.use('/api/rooms', roomsRouter);
 // app.use('/api/messages', messagesRouter);
 

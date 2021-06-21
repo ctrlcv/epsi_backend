@@ -7,30 +7,27 @@ const Utils = require('./../service/utils');
 exports.signIn = async function(req, res, next) {
     const { userid, password } = req.body;
     if (!userid || !password) {
-        return res.status(422)
-                .json({ 
-                        success: false, 
-                        message: "아이디와 비밀번호를 입력하세요." 
-                    });
+        return res.status(422).json({ 
+            success: false, 
+            message: "아이디와 비밀번호를 입력하세요." 
+        });
     }
 
     try {
         let findUser = await Users.findUser(userid);
         if (findUser.length === 0) {
-            return res.status(423)
-                    .json({ 
-                        success: false, 
-                        message: "존재하지 않는 사용자입니다."
-                    });
+            return res.status(423).json({ 
+                success: false, 
+                message: "존재하지 않는 사용자입니다."
+            });
         }
 
         const isMatch = await bcrypt.compare(password, findUser[0].Password);
         if (!isMatch) {
-            return res.status(424)
-                    .json({ 
-                        success: false,
-                        message: "비밀번호가 올바르지 않습니다."
-                    });
+            return res.status(424).json({ 
+                success: false,
+                message: "비밀번호가 올바르지 않습니다."
+            });
         }
 
         const payload = {
@@ -60,7 +57,7 @@ exports.signIn = async function(req, res, next) {
                 accesstoken: token,
                 expiresdate: expiresdate.getTime(),
                 refreshtoken : refreshToken,
-                refreshExpiresdate: refreshExpiresdate.getTime()
+                refreshexpiresdate: refreshExpiresdate.getTime()
             })
         }
     } catch (err) {
@@ -74,30 +71,30 @@ exports.signIn = async function(req, res, next) {
 }
 
 exports.signUp = async function(req, res, next) {
-    const { email, password, name, nickname, phonenumber } = req.body;
+    const { userid, password, username, auth } = req.body;
 
-    if (!email || !password || !name) {
-        return res.status(422)
-            .json({ 
-                success: false,
-                message: "You must provide email, password and username" 
-            });
+    if (!userid || !password) {
+        return res.status(422).json({ 
+            success: false,
+            message: "아이디와 비밀번호를 입력하세요." 
+        });
     }
 
     try {
-        let findUser = await Users.findUser(email);
+        let findUser = await Users.findUser(userid);
         if (findUser.length > 0) {
-            return res.status(423)
-                    .json({ 
-                        success: false, 
-                        message: "이미 등록된 email 입니다."
-                    });
+            return res.status(423).json({ 
+                success: false, 
+                message: "이미 등록된 User Id 입니다."
+            });
         }
 
         let hash = await bcrypt.hash(password, 10);
 
-        let newUser = await Users.createUser(email, hash, name, nickname, phonenumber);
+        let newUser = await Users.createUser(userid, username, hash, auth);
+
         console.log(newUser);
+
         if (!Utils.isEmpty(newUser)) {
             return res.status(200).json({
                 success: true,
@@ -134,16 +131,16 @@ exports.getToken = async function(req, res, next) {
             });
         }
 
-        let userid = decoded.id;
-        let useremail = decoded.email;
-        let username = decoded.name;
-        let usernickname = decoded.nickname;
+        let decidedId = decoded.id;
+        let decidedUserid = decoded.userid;
+        let decidedUsername = decoded.username;
+        let decidedAuth = decoded.auth;
 
         const payload = {
-            id: userid,
-            email: useremail,
-            name: username,
-            nickname: usernickname
+            id: decidedId,
+            userid: decidedUserid,
+            username: decidedUsername,
+            auth: decidedAuth
         };
 
         let expiresdate = new Date();
@@ -162,7 +159,7 @@ exports.getToken = async function(req, res, next) {
                 accesstoken: token,
                 expiresdate: expiresdate.getTime(),
                 refreshtoken : refreshToken,
-                refreshExpiresdate: refreshExpiresdate.getTime()
+                refreshexpiresdate: refreshExpiresdate.getTime()
             })
         }
     } catch (err) {
@@ -195,16 +192,16 @@ exports.getAccessToken = async function(req, res, next) {
             });
         }
 
-        let userid = decoded.id;
-        let useremail = decoded.email;
-        let username = decoded.name;
-        let usernickname = decoded.nickname;
+        let decidedId = decoded.id;
+        let decidedUserid = decoded.userid;
+        let decidedUsername = decoded.username;
+        let decidedAuth = decoded.auth;
 
         const payload = {
-            id: userid,
-            email: useremail,
-            name: username,
-            nickname: usernickname
+            id: decidedId,
+            userid: decidedUserid,
+            username: decidedUsername,
+            auth: decidedAuth
         };
 
         let expiresdate = new Date();
@@ -249,22 +246,21 @@ exports.getUserInfo = async function(req, res, next) {
             });
         }
 
-        let useremail = decoded.email;
+        let userid = decoded.userid;
 
-        let findUser = await Users.findUser(useremail);
+        let findUser = await Users.findUser(userid);
         if (findUser.length === 0) {
-            return res.status(423)
-                    .json({ 
-                        success: false, 
-                        message: "존재하지 않는 사용자입니다."
-                    });
+            return res.status(423).json({ 
+                success: false, 
+                message: "존재하지 않는 사용자입니다."
+            });
         }
 
         const payload = {
-            id: findUser[0].userid,
-            email: findUser[0].email,
-            name: findUser[0].name,
-            nickname: findUser[0].nickname
+            id: findUser[0].Id,
+            userid: findUser[0].User_id,
+            username: findUser[0].User_name,
+            auth: findUser[0].Auth
         };
 
         let expiresdate = new Date();
@@ -280,15 +276,14 @@ exports.getUserInfo = async function(req, res, next) {
             return res.status(200).json({
                 success: true,
                 message: "User successfully authenticated",
-                email: findUser[0].email,
-                name: findUser[0].name,
-                userid: findUser[0].userid,
-                nickname: findUser[0].nickname,
-                phonenumber: findUser[0].phonenumber,
+                id: findUser[0].Id,
+                userid: findUser[0].User_id,
+                username: findUser[0].User_name,
+                auth: findUser[0].Auth,
                 accesstoken: token,
                 expiresdate: expiresdate.getTime(),
                 refreshtoken : refreshToken,
-                refreshExpiresdate: refreshExpiresdate.getTime()
+                refreshexpiresdate: refreshExpiresdate.getTime()
             })
         }
     } catch (err) {
@@ -302,53 +297,49 @@ exports.getUserInfo = async function(req, res, next) {
 }
 
 exports.updateUser = async function(req, res, next) {
-    const { userid, email, password, newpassword, decideid, name, nickname, phonenumber, current, photo, background } = req.body;
-    if (!email || !password) {
-        return res.status(422)
-                .json({ 
-                        success: false, 
-                        message: "이메일과 비밀번호를 입력하세요." 
-                    });
+    const { id, userid, password, newpassword, username, auth} = req.body;
+    if (!userid || !password) {
+        return res.status(422).json({ 
+            success: false, 
+            message: "이메일과 비밀번호를 입력하세요." 
+        });
     }
 
     try {
-        let findUser = await Users.findUser(email);
+        let findUser = await Users.findUser(userid);
         if (findUser.length === 0) {
-            return res.status(423)
-                    .json({ 
-                        success: false, 
-                        message: "존재하지 않는 사용자입니다."
-                    });
+            return res.status(423).json({ 
+                success: false, 
+                message: "존재하지 않는 사용자입니다."
+            });
         }
 
-        const isMatch = await bcrypt.compare(password, findUser[0].password);
+        const isMatch = await bcrypt.compare(password, findUser[0].Password);
         if (!isMatch) {
-            return res.status(424)
-                    .json({ 
-                        success: false,
-                        message: "비밀번호가 올바르지 않습니다."
-                    });
+            return res.status(424).json({ 
+                success: false,
+                message: "비밀번호가 올바르지 않습니다."
+            });
         }
 
         let newhash = await bcrypt.hash(newpassword, 10);
 
-        let updateUser = await Users.updateUser(userid, newhash, decideid, name, nickname, phonenumber, current, photo, background);
+        let updateUser = await Users.updateUser(id, userid, username, newhash, auth);
         console.log(updateUser);
 
         if (Utils.isEmpty(updateUser)) {
-            return res.status(424)
-                    .json({
-                        success: false, 
-                        message: "updateError"
-                    });
+            return res.status(424).json({
+                success: false, 
+                message: "updateError"
+            });
         }
 
-        if (!Utils.isEmpty(name) || !Utils.isEmpty(nickname)) {
+        if (!Utils.isEmpty(username)) {
             const payload = {
-                id: userid,
-                email: email,
-                name: name,
-                nickname: nickname
+                id: updateUser[0].Id,
+                userid: userid,
+                username: username,
+                auth: auth
             };
     
             let expiresdate = new Date();
@@ -364,15 +355,14 @@ exports.updateUser = async function(req, res, next) {
                 return res.status(200).json({
                     success: true,
                     message: "User successfully authenticated",
-                    email: email,
-                    name: name,
+                    id: updateUser[0].Id,
                     userid: userid,
-                    nickname: nickname,
-                    phonenumber: phonenumber,
+                    username: username,
+                    auth: auth,
                     accesstoken: token,
                     expiresdate: expiresdate.getTime(),
                     refreshtoken : refreshToken,
-                    refreshExpiresdate: refreshExpiresdate.getTime()
+                    refreshexpiresdate: refreshExpiresdate.getTime()
                 });
             }
         }
