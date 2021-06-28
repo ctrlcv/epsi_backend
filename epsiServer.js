@@ -7,7 +7,7 @@ const app = express();
 // const socketio = require('socket.io')(http);
 
 const usersRouter = require('./routes/users');
-// const roomsRouter = require('./routes/rooms');
+const epsiRouter = require('./routes/epsi');
 // const messagesRouter = require('./routes/messages');
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 app.use('/api/users', usersRouter);
-// app.use('/api/rooms', roomsRouter);
+app.use('/api/epsi', epsiRouter);
 // app.use('/api/messages', messagesRouter);
 
 const serverPort = process.env.PORT || 3108;
