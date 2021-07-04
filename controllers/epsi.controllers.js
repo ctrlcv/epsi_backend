@@ -75,8 +75,10 @@ exports.getEpsiData = async function(req, res, next) {
     const { lat, lon } = req.body;
 
     try {
-        let typeCode = await Epsi.getEpsiData(lat, lon);
-        if (Utils.isEmpty(groupCode)) {
+        let pipeList = await Epsi.getEpsiData(lat, lon);
+        // console.log(pipeList);
+
+        if (Utils.isEmpty(pipeList)) {
             return res.status(434).json({
                 success: false,
                 message: "EPSI data are Empty"
@@ -84,7 +86,7 @@ exports.getEpsiData = async function(req, res, next) {
         }
         return res.status(200).json({
             success: true,
-            result: typeCode
+            result: pipeList
         });
     } catch (err) {
         console.error(err);
