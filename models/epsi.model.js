@@ -97,7 +97,8 @@ exports.findEpsiId = async (positionX, positionY) => {
     try {
         const query =
             `
-               SELECT  Id AS id
+               SELECT Id AS id
+                 FROM tb_epis
                 WHERE Position_x = ${positionX}
                   AND Position_y = ${positionY} `;
         const result = await sql.query(query);
