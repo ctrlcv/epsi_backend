@@ -7,5 +7,7 @@ router.post('/groupcd', verifyToken, epsiController.getGroupCode);
 router.post('/materialcd', verifyToken, epsiController.getMaterialCode);
 router.post('/typecd', verifyToken, epsiController.getTypeCode);
 router.post('/epsi', verifyToken, epsiController.getEpsiData);
+router.post('/saveepsi', verifyToken, epsiController.saveEpsiData);
+
 
 module.exports = router;
