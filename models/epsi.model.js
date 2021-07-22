@@ -201,7 +201,7 @@ exports.insertEpsiData = async (pipegroup,      pipetype,
         }
 
         console.log(query1 + query2 + query3 + query4);
-        return db.query(query1 + query2 + query3 + query4);
+        return await db.query(query1 + query2 + query3 + query4);
     } catch (err) {
         console.error(err);
         return false;
@@ -289,7 +289,7 @@ exports.updateEpsiData = async (id,             pipegroup,      pipetype,       
         query += `  WHERE id = ${id} `;
 
         console.log(query);
-        return db.query(query);
+        return await db.query(query);
     } catch (err) {
         console.error(err);
         return false;
