@@ -106,6 +106,7 @@ exports.saveEpsiData = async function(req, res, next) {
 
     try {
         let foundId = await Epsi.findEpsiId(positionx, positiony);
+        console.log(foundId);
 
         let result;
         if (Utils.isEmpty(foundId)) {
