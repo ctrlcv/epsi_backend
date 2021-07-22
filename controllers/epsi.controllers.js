@@ -98,3 +98,41 @@ exports.getEpsiData = async function(req, res, next) {
     }
 }
 
+exports.saveEpsiData = async function(req, res, next) {
+    const { pipegroup,      pipetype,       setPosition,    distanceDirection, 
+            diameter,       material,       distance,       distanceLr,     pipedepth,      
+            positionx,      positiony,      offercompany,   companyphone,   memo,           
+            buildcompany,   buildphone,     siteimageurl } = req.body;
+
+    try {
+        let foundId = await Epsi.findEpsiId(positionx, positiony);
+
+        let result;
+        if (Utils.isEmpty(foundId)) {
+            result = Epsi.insertEpsiData(   pipegroup,      pipetype,       setPosition,    distanceDirection,  
+                                            diameter,       material,       distance,       distanceLr,             
+                                            pipedepth,      positionx,      positiony,      offercompany,       
+                                            companyphone,   memo,           buildcompany,   buildphone,
+                                            siteimageurl);
+        } else {
+            result = Epsi.updateEpsiData(   foundId,        pipegroup,      pipetype,       setPosition,    distanceDirection,  
+                                            diameter,       material,       distance,       distanceLr,             
+                                            pipedepth,      positionx,      positiony,      offercompany,       
+                                            companyphone,   memo,           buildcompany,   buildphone,
+                                            siteimageurl);
+        }
+
+        return res.status(200).json({
+            success: true,
+            result: result
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(434).json({
+            success: false,
+            message: "Error",
+            error: err
+        });
+    }
+}
+

@@ -93,6 +93,20 @@ exports.getEpsiData = async (lat, lon) => {
     }
 }
 
+exports.findEpsiId = async (positionX, positionY) => {
+    try {
+        const query =
+            `
+               SELECT  Id AS id
+                WHERE Position_x = ${positionX}
+                  AND Position_y = ${positionY} `;
+        const result = await sql.query(query);
+        return result[0];
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
 
 exports.insertEpsiData = async (pipegroup,      pipetype, 
                                 setPosition,    distanceDirection,  diameter,           material, 
