@@ -102,7 +102,7 @@ exports.findEpsiId = async (positionX, positionY) => {
                 WHERE Position_x = ${positionX}
                   AND Position_y = ${positionY} `;
         const result = await sql.query(query);
-        return result[0]['id'];
+        return result[0].id;
     } catch (err) {
         console.error(err);
         return false;
