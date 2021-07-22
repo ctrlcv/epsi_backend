@@ -110,18 +110,20 @@ exports.saveEpsiData = async function(req, res, next) {
 
         let result;
         if (Utils.isEmpty(foundId)) {
-            result = Epsi.insertEpsiData(   pipegroup,      pipetype,       setPosition,    distanceDirection,  
-                                            diameter,       material,       distance,       distanceLr,             
-                                            pipedepth,      positionx,      positiony,      offercompany,       
-                                            companyphone,   memo,           buildcompany,   buildphone,
-                                            siteimageurl);
+            result = await Epsi.insertEpsiData( pipegroup,      pipetype,       setPosition,    distanceDirection,  
+                                                diameter,       material,       distance,       distanceLr,             
+                                                pipedepth,      positionx,      positiony,      offercompany,       
+                                                companyphone,   memo,           buildcompany,   buildphone,
+                                                siteimageurl);
         } else {
-            result = Epsi.updateEpsiData(   foundId,        pipegroup,      pipetype,       setPosition,    distanceDirection,  
-                                            diameter,       material,       distance,       distanceLr,             
-                                            pipedepth,      positionx,      positiony,      offercompany,       
-                                            companyphone,   memo,           buildcompany,   buildphone,
-                                            siteimageurl);
+            result = await Epsi.updateEpsiData(   foundId,        pipegroup,      pipetype,       setPosition,    distanceDirection,  
+                                                  diameter,       material,       distance,       distanceLr,             
+                                                  pipedepth,      positionx,      positiony,      offercompany,       
+                                                  companyphone,   memo,           buildcompany,   buildphone,
+                                                  siteimageurl);
         }
+
+        console.log(result);
 
         return res.status(200).json({
             success: true,
