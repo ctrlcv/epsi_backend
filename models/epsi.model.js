@@ -60,7 +60,8 @@ exports.getEpsiData = async (lat, lon) => {
     try {
         const query =
             `
-                SELECT  a.Id AS id,    
+                SELECT  a.Id AS id,
+                        a.Serial_no AS serialno,
                         a.Pipe_group AS pipegroup,      b.Grdoup_name AS pipegroupname,
                         b.Group_color AS pipegroupcolor,
                         a.Pipe_type AS pipetype,        c.type_name AS pipetypename,
@@ -109,7 +110,7 @@ exports.findEpsiId = async (positionX, positionY) => {
     }
 }
 
-exports.insertEpsiData = async (pipegroup,      pipetype, 
+exports.insertEpsiData = async (serialno,       pipegroup,          pipetype, 
                                 setPosition,    distanceDirection,  diameter,           material, 
                                 distance,       distanceLr,         pipedepth,          positionx, 
                                 positiony,      offercompany,       companyphone,       memo,
@@ -124,6 +125,11 @@ exports.insertEpsiData = async (pipegroup,      pipetype,
         let query3 = `'${pipegroup}', '${pipetype}'`;
 
         let query4 = `)`;
+
+        if (!Utils.isNull(setPosition)) {
+            query1 += `, Serial_no`;
+            query3 += `, '${serialno}'`;
+        }
 
         if (!Utils.isNull(setPosition)) {
             query1 += `, set_position`;
@@ -208,16 +214,20 @@ exports.insertEpsiData = async (pipegroup,      pipetype,
     }
 }
 
-exports.updateEpsiData = async (id,             pipegroup,      pipetype,       setPosition,    distanceDirection, 
-                                diameter,       material,       distance,       distanceLr,     pipedepth,      
-                                positionx,      positiony,      offercompany,   companyphone,   memo,           
-                                buildcompany,   buildphone,     siteimageurl) => {
+exports.updateEpsiData = async (id,                 serialno,       pipegroup,      pipetype,       setPosition,    
+                                distanceDirection,  diameter,       material,       distance,       distanceLr,     
+                                pipedepth,          positionx,      positiony,      offercompany,   companyphone,   
+                                memo,               buildcompany,   buildphone,     siteimageurl) => {
     try {
         let query = `
             UPDATE tb_epis 
                 SET
                     id = ${id}`;
-                    
+        
+        if (!Utils.isNull(pipegroup)) {
+            query += `, Serial_no = '${serialno}'`;
+        }
+
         if (!Utils.isNull(pipegroup)) {
             query += `, Pipe_group = '${pipegroup}'`;
         }

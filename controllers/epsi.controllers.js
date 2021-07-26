@@ -99,31 +99,27 @@ exports.getEpsiData = async function(req, res, next) {
 }
 
 exports.saveEpsiData = async function(req, res, next) {
-    const { pipegroup,      pipetype,       setPosition,    distanceDirection, 
+    const { serialno,       pipegroup,      pipetype,       setPosition,    distanceDirection, 
             diameter,       material,       distance,       distanceLr,     pipedepth,      
             positionx,      positiony,      offercompany,   companyphone,   memo,           
             buildcompany,   buildphone,     siteimageurl } = req.body;
 
     try {
         let foundId = await Epsi.findEpsiId(positionx, positiony);
-        // console.log(foundId);
-        // console.log(foundId.id);
-        // console.log(foundId[0].id);
-        // console.log(foundId['id']);
 
         let result;
         if (Utils.isEmpty(foundId)) {
-            result = await Epsi.insertEpsiData( pipegroup,      pipetype,       setPosition,    distanceDirection,  
+            result = await Epsi.insertEpsiData( serialno,       pipegroup,      pipetype,       setPosition,    distanceDirection,
                                                 diameter,       material,       distance,       distanceLr,             
                                                 pipedepth,      positionx,      positiony,      offercompany,       
                                                 companyphone,   memo,           buildcompany,   buildphone,
                                                 siteimageurl);
         } else {
-            result = await Epsi.updateEpsiData(   foundId,        pipegroup,      pipetype,       setPosition,    distanceDirection,  
-                                                  diameter,       material,       distance,       distanceLr,             
-                                                  pipedepth,      positionx,      positiony,      offercompany,       
-                                                  companyphone,   memo,           buildcompany,   buildphone,
-                                                  siteimageurl);
+            result = await Epsi.updateEpsiData( foundId,        serialno,       pipegroup,      pipetype,       setPosition,    distanceDirection,
+                                                diameter,       material,       distance,       distanceLr,
+                                                pipedepth,      positionx,      positiony,      offercompany,       
+                                                companyphone,   memo,           buildcompany,   buildphone,
+                                                siteimageurl);
         }
 
         console.log(result);
