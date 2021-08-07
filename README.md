@@ -21,8 +21,10 @@ host : my5701.gabiadb.com
  Naver Cloud ID/PW
 ID : psj1411@ecommtech.co.kr
 PW : ecomm!tech1
- 
- //----------------------------------------------------
+//-----------------------------------------------------
+ Android apk keystore password
+ ecomm!tech1
+  //----------------------------------------------------
 Client ID : krxte7cv3q
 Client Secret : ty9rMTgdjiNxie1sTav7D10uJiSb0rrxtgU0Qza2
 

@@ -224,7 +224,7 @@ exports.updateEpsiData = async (id,                 serialno,       pipegroup,  
                 SET
                     id = ${id}`;
         
-        if (!Utils.isNull(pipegroup)) {
+        if (!Utils.isNull(serialno)) {
             query += `, Serial_no = '${serialno}'`;
         }
 
