@@ -116,14 +116,13 @@ exports.getEpsiOneData = async (lat, lon) => {
                         a.memo, 
                         a.Build_Company AS buildcompany, 
                         a.Build_phone AS buildphone, 
-                        a.Site_image AS siteimageurl,
+                        a.Site_image AS siteimageurl
                   FROM tb_epis AS a, tb_group_cd AS b, tb_type_cd AS c, tb_metarial_cd AS d
                  WHERE a.Pipe_group = b.Group_cd 
                    AND a.Pipe_type = c.type_cd
                    AND a.Pipe_material = d.material_cd
                    AND (a.Position_x = ${lat} OR a.Position_x = ${lon})
                    AND (a.Position_y = ${lat} OR a.Position_y = ${lon})
-                 ORDER BY locdistance
             `
         const result = await sql.query(query);
         return result[0];
