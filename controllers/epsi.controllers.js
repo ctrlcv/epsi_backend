@@ -98,6 +98,33 @@ exports.getEpsiData = async function(req, res, next) {
     }
 }
 
+exports.getEpsiOneData = async function(req, res, next) {
+    const { lat, lon } = req.body;
+
+    try {
+        let pipeList = await Epsi.getEpsiOneData(lat, lon);
+        // console.log(pipeList);
+
+        if (Utils.isEmpty(pipeList)) {
+            return res.status(434).json({
+                success: false,
+                message: "EPSI data are Empty"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            result: pipeList
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(434).json({
+            success: false,
+            message: "Error",
+            error: err
+        });
+    }
+}
+
 exports.saveEpsiData = async function(req, res, next) {
     const { serialno,       pipegroup,      pipetype,       setPosition,    distanceDirection, 
             diameter,       material,       distance,       distanceLr,     pipedepth,      

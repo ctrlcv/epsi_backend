@@ -7,6 +7,7 @@ router.post('/groupcd', epsiController.getGroupCode);
 router.post('/materialcd', epsiController.getMaterialCode);
 router.post('/typecd', epsiController.getTypeCode);
 router.post('/epsi', epsiController.getEpsiData);
+router.post('/epsiOne', epsiController.getEpsiOneData);
 router.post('/store', verifyToken, epsiController.saveEpsiData);
 
 

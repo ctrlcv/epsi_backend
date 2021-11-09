@@ -94,6 +94,45 @@ exports.getEpsiData = async (lat, lon) => {
     }
 }
 
+exports.getEpsiOneData = async (lat, lon) => {
+    try {
+        const query =
+            `
+                SELECT  a.Id AS id,
+                        a.Serial_no AS serialno,
+                        a.Pipe_group AS pipegroup,      b.Grdoup_name AS pipegroupname,
+                        b.Group_color AS pipegroupcolor,
+                        a.Pipe_type AS pipetype,        c.type_name AS pipetypename,
+                        a.set_position AS setPosition,
+                        a.distance_direction AS distanceDirection,
+                        a.Pipe_Diameter AS diameter,    
+                        a.Pipe_material AS material,    d.material_name AS materialname,
+                        a.Distance AS distance,
+                        a.distance_lr AS distanceLr,
+                        a.Depth AS pipedepth,
+                        a.Position_x AS positionx,      a.Position_y AS positiony, 
+                        a.Offer_company AS offercompany, 
+                        a.Company_phone AS companyphone,
+                        a.memo, 
+                        a.Build_Company AS buildcompany, 
+                        a.Build_phone AS buildphone, 
+                        a.Site_image AS siteimageurl,
+                  FROM tb_epis AS a, tb_group_cd AS b, tb_type_cd AS c, tb_metarial_cd AS d
+                 WHERE a.Pipe_group = b.Group_cd 
+                   AND a.Pipe_type = c.type_cd
+                   AND a.Pipe_material = d.material_cd
+                   AND (a.Position_x = ${lat} OR a.Position_x = ${lon})
+                   AND (a.Position_y = ${lat} OR a.Position_y = ${lon})
+                 ORDER BY locdistance
+            `
+        const result = await sql.query(query);
+        return result[0];
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
 exports.findEpsiId = async (positionX, positionY) => {
     try {
         const query =
