@@ -129,7 +129,7 @@ exports.saveEpsiData = async function(req, res, next) {
     const { serialno,       pipegroup,      pipetype,       setPosition,    distanceDirection, 
             diameter,       material,       distance,       distanceLr,     pipedepth,      
             positionx,      positiony,      offercompany,   companyphone,   memo,           
-            buildcompany,   buildphone,     siteimageurl } = req.body;
+            buildcompany,   buildphone,     siteimageurl,   pipeyear } = req.body;
 
     try {
         let foundId = await Epsi.findEpsiId(positionx, positiony);
@@ -140,13 +140,13 @@ exports.saveEpsiData = async function(req, res, next) {
                                                 diameter,       material,       distance,       distanceLr,             
                                                 pipedepth,      positionx,      positiony,      offercompany,       
                                                 companyphone,   memo,           buildcompany,   buildphone,
-                                                siteimageurl);
+                                                siteimageurl,   pipeyear);
         } else {
             result = await Epsi.updateEpsiData( foundId,        serialno,       pipegroup,      pipetype,       setPosition,    distanceDirection,
                                                 diameter,       material,       distance,       distanceLr,
                                                 pipedepth,      positionx,      positiony,      offercompany,       
                                                 companyphone,   memo,           buildcompany,   buildphone,
-                                                siteimageurl);
+                                                siteimageurl,   pipeyear);
         }
 
         console.log(result);
