@@ -79,7 +79,8 @@ exports.getEpsiData = async (lat, lon) => {
                         a.Build_Company AS buildcompany, 
                         a.Build_phone AS buildphone, 
                         a.Site_image AS siteimageurl,
-                        SQRT(POWER(ABS(${lat} - a.Position_x), 2) + POWER(ABS(${lon} - a.Position_y), 2)) as locdistance
+                        SQRT(POWER(ABS(${lat} - a.Position_x), 2) + POWER(ABS(${lon} - a.Position_y), 2)) as locdistance,
+                        a.pipeyear
                   FROM tb_epis AS a, tb_group_cd AS b, tb_type_cd AS c, tb_metarial_cd AS d
                  WHERE a.Pipe_group = b.Group_cd 
                    AND a.Pipe_type = c.type_cd
@@ -116,7 +117,8 @@ exports.getEpsiOneData = async (lat, lon) => {
                         a.memo, 
                         a.Build_Company AS buildcompany, 
                         a.Build_phone AS buildphone, 
-                        a.Site_image AS siteimageurl
+                        a.Site_image AS siteimageurl,
+                        a.pipeyear
                   FROM tb_epis AS a, tb_group_cd AS b, tb_type_cd AS c, tb_metarial_cd AS d
                  WHERE a.Pipe_group = b.Group_cd 
                    AND a.Pipe_type = c.type_cd
@@ -152,7 +154,7 @@ exports.insertEpsiData = async (serialno,       pipegroup,          pipetype,
                                 setPosition,    distanceDirection,  diameter,           material, 
                                 distance,       distanceLr,         pipedepth,          positionx, 
                                 positiony,      offercompany,       companyphone,       memo,
-                                buildcompany,   buildphone,         siteimageurl) => {
+                                buildcompany,   buildphone,         siteimageurl,       pipeyear) => {
     try {
         let query1 = `
             INSERT INTO tb_epis 
@@ -244,6 +246,11 @@ exports.insertEpsiData = async (serialno,       pipegroup,          pipetype,
             query3 += `, '${siteimageurl}'`;
         }
 
+        if (!Utils.isNull(pipeyear)) {
+            query1 += `, pipeyear`;
+            query3 += `, '${pipeyear}'`;
+        }
+
         console.log(query1 + query2 + query3 + query4);
         return await sql.query(query1 + query2 + query3 + query4);
     } catch (err) {
@@ -255,7 +262,7 @@ exports.insertEpsiData = async (serialno,       pipegroup,          pipetype,
 exports.updateEpsiData = async (id,                 serialno,       pipegroup,      pipetype,       setPosition,    
                                 distanceDirection,  diameter,       material,       distance,       distanceLr,     
                                 pipedepth,          positionx,      positiony,      offercompany,   companyphone,   
-                                memo,               buildcompany,   buildphone,     siteimageurl) => {
+                                memo,               buildcompany,   buildphone,     siteimageurl,   pipeyear) => {
     try {
         let query = `
             UPDATE tb_epis 
@@ -332,6 +339,10 @@ exports.updateEpsiData = async (id,                 serialno,       pipegroup,  
 
         if (!Utils.isNull(siteimageurl)) {
             query += `, Site_image = '${siteimageurl}'`;
+        }   //pipeyear
+
+        if (!Utils.isNull(pipeyear)) {
+            query += `, pipeyear = '${pipeyear}'`;
         }
 
         query += `  WHERE id = ${id} `;
