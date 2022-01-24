@@ -1,2 +1,4 @@
 node_modules/
 .npm
+dev.js
+prid.js
